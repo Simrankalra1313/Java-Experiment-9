@@ -1,0 +1,70 @@
+package com.example;
+
+public class Course {
+    private String courseName;
+
+    public Course(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public void showCourse() {
+        System.out.println("Enrolled in course: " + courseName);
+    }
+}
+
+package com.example;
+
+public class Student {
+    private Course course;
+
+    // Constructor Injection
+    public Student(Course course) {
+        this.course = course;
+    }
+
+    public void displayInfo() {
+        System.out.println("Student object created successfully!");
+        course.showCourse();
+    }
+}
+
+package com.example;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Course course() {
+        return new Course("Spring Framework Basics");
+    }
+
+    @Bean
+    public Student student() {
+        // Spring will handle dependency injection here
+        return new Student(course());
+    }
+}
+
+package com.example;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        // Initialize Spring container using Java-based configuration
+        AnnotationConfigApplicationContext context = 
+                new AnnotationConfigApplicationContext(AppConfig.class);
+
+        // Retrieve the Student bean from the container
+        Student student = context.getBean(Student.class);
+
+        // Call method to verify dependency injection
+        student.displayInfo();
+
+        // Close context
+        context.close();
+    }
+}
